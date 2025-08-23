@@ -54,7 +54,7 @@ const Hero = () => {
       <div className="flex justify-center relative my-20 z-10">
         <div className="max-w-[89vw] md:max-w-2xl lg:max-w-[60vw] flex flex-col items-center justify-center">
           <p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80">
-            Crafting Tomorrow's Web & Mobile Experiences
+            Crafting Tomorrow&apos;s Web & Mobile Experiences
           </p>
 
           {/**
@@ -68,7 +68,7 @@ const Hero = () => {
           />
 
           <p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80">
-            Hi! I'm Emmanuel Omunizua,
+            Hi! I&apos;m Emmanuel Omunizua,
             <br /> a Frontend and Mobile App Developer based in Nigeria.
           </p>
 

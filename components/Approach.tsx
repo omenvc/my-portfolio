@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { CanvasRevealEffect } from "./ui/CanvasRevealEffect";
@@ -143,8 +143,30 @@ const Card = ({
     </div>
   );
 };
+
 // add order prop for the Phase number change
 const AceternityIcon = ({ order }: { order: string }) => {
+  const [isSafari, setIsSafari] = useState(false);
+
+  useEffect(() => {
+    // Detect Safari browser
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isSafariBrowser = userAgent.includes('safari') && !userAgent.includes('chrome');
+    setIsSafari(isSafariBrowser);
+  }, []);
+
+  if (isSafari) {
+    // Plain button for Safari
+    return (
+      <div>
+        <button className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-purple-600 hover:bg-purple-700 transition-colors px-5 py-2 text-white backdrop-blur-3xl font-bold text-2xl">
+          {order}
+        </button>
+      </div>
+    );
+  }
+
+  // Animated button for other browsers
   return (
     <div>
       {/* this btn is from https://ui.aceternity.com/components/tailwindcss-buttons border magic */}
@@ -164,24 +186,6 @@ const AceternityIcon = ({ order }: { order: string }) => {
         </span>
       </button>
     </div>
-    // remove the svg and add the button
-    // <svg
-    //   width="66"
-    //   height="65"
-    //   viewBox="0 0 66 65"
-    //   fill="none"
-    //   xmlns="http://www.w3.org/2000/svg"
-    //   className="h-10 w-10 text-black dark:text-white group-hover/canvas-card:text-white "
-    // >
-    //   <path
-    //     d="M8 8.05571C8 8.05571 54.9009 18.1782 57.8687 30.062C60.8365 41.9458 9.05432 57.4696 9.05432 57.4696"
-    //     stroke="currentColor"
-    //     strokeWidth="15"
-    //     strokeMiterlimit="3.86874"
-    //     strokeLinecap="round"
-    //     style={{ mixBlendMode: "darken" }}
-    //   />
-    // </svg>
   );
 };
 

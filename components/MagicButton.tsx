@@ -1,15 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 /**
- *  UI: border magic from tailwind css btns
- *  Link: https://ui.aceternity.com/components/tailwindcss-buttons
- *
- *  change border radius to rounded-lg
- *  add margin of md:mt-10
- *  remove focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50
+ * UI: border magic from tailwind css btns
+ * Safari-compatible version - shows plain button in Safari, animated in other browsers
  */
 
-type ColorVariant = 'default' | 'blue' | 'purple' | 'mono' | 'gradient';
+type ColorVariant = "default" | "blue" | "purple" | "mono" | "gradient";
 
 const MagicButton = ({
   title,
@@ -17,7 +13,7 @@ const MagicButton = ({
   position,
   handleClick,
   otherClasses,
-  variant = 'default'
+  variant = "default",
 }: {
   title: string;
   icon: React.ReactNode;
@@ -26,36 +22,66 @@ const MagicButton = ({
   otherClasses?: string;
   variant?: ColorVariant;
 }) => {
-  
-  // Color combinations that work with black/white/blue/purple theme
+  const [isSafari, setIsSafari] = useState(false);
+
+  useEffect(() => {
+    // Detect Safari browser
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isSafariBrowser =
+      userAgent.includes("safari") && !userAgent.includes("chrome");
+    setIsSafari(isSafariBrowser);
+  }, []);
+
+  // Animated gradient classes for non-Safari browsers
   const colorVariants = {
-    // Cool blue to purple gradient
-    default: "bg-[conic-gradient(from_90deg_at_50%_50%,#3b82f6_0%,#8b5cf6_50%,#3b82f6_100%)]",
-    
-    // Monochromatic blue shades
-    blue: "bg-[conic-gradient(from_90deg_at_50%_50%,#1e40af_0%,#3b82f6_25%,#60a5fa_50%,#3b82f6_75%,#1e40af_100%)]",
-    
-    // Purple to violet gradient
-    purple: "bg-[conic-gradient(from_90deg_at_50%_50%,#6d28d9_0%,#8b5cf6_25%,#a78bfa_50%,#8b5cf6_75%,#6d28d9_100%)]",
-    
-    // Subtle monochrome (works great with dark themes)
-    mono: "bg-[conic-gradient(from_90deg_at_50%_50%,#374151_0%,#6b7280_25%,#9ca3af_50%,#6b7280_75%,#374151_100%)]",
-    
-    // Dynamic gradient with multiple colors
-    gradient: "bg-[conic-gradient(from_90deg_at_50%_50%,#1e40af_0%,#3b82f6_20%,#8b5cf6_40%,#a855f7_60%,#8b5cf6_80%,#1e40af_100%)]"
+    default: "bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500",
+    blue: "bg-gradient-to-r from-blue-800 via-blue-500 to-blue-600",
+    purple: "bg-gradient-to-r from-purple-800 via-purple-500 to-violet-500",
+    mono: "bg-gradient-to-r from-gray-700 via-gray-500 to-gray-600",
+    gradient: "bg-gradient-to-br from-blue-600 via-purple-500 to-pink-500",
   };
 
+  // Plain colors for Safari
+  const safariColors = {
+    default: "bg-blue-600",
+    blue: "bg-blue-700",
+    purple: "bg-purple-600",
+    mono: "bg-gray-600",
+    gradient: "bg-purple-600",
+  };
+
+  if (isSafari) {
+    // Plain button for Safari
+    return (
+      <button
+        className={`inline-flex h-12 w-full md:w-60 md:mt-10 items-center justify-center 
+                   rounded-lg px-7 text-sm font-medium text-white gap-2 
+                   ${safariColors[variant]} hover:opacity-90 transition-opacity 
+                   focus:outline-none ${otherClasses}`}
+        onClick={handleClick}
+      >
+        {position === "left" && icon}
+        {title}
+        {position === "right" && icon}
+      </button>
+    );
+  }
+
+  // Animated button for other browsers
   return (
     <button
-      className="relative inline-flex h-12 w-full md:w-60 md:mt-10 overflow-hidden rounded-lg p-[1px] focus:outline-none"
+      className="relative inline-flex h-12 w-full md:w-60 md:mt-10 overflow-hidden rounded-lg p-[1px] focus:outline-none group"
       onClick={handleClick}
     >
-      <span className={`absolute inset-[-1000%] animate-[spin_2s_linear_infinite] ${colorVariants[variant]}`} />
-      
-      {/* remove px-3 py-1, add px-5 gap-2 */}
+      {/* Animated border */}
       <span
-        className={`inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg 
-             bg-slate-950 px-7 text-sm font-medium text-white backdrop-blur-3xl gap-2 ${otherClasses}`}
+        className={`absolute inset-[-1000%] animate-[spin_2s_linear_infinite] ${colorVariants[variant]}`}
+      />
+
+      {/* Button content */}
+      <span
+        className={`inline-flex h-full w-full cursor-pointer items-center justify-center rounded-lg
+              bg-slate-950 px-7 text-sm font-medium text-white backdrop-blur-3xl gap-2 ${otherClasses}`}
       >
         {position === "left" && icon}
         {title}

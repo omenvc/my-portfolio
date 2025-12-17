@@ -1,11 +1,16 @@
+"use client";
 import { useState } from "react";
 import { IoCopyOutline } from "react-icons/io5";
 import Lottie from "react-lottie";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { BackgroundGradientAnimation } from "./GradientBg";
-import GridGlobe from "./GridGlobe";
 import animationData from "@/data/confetti.json";
 import MagicButton from "../MagicButton";
+
+const GridGlobe = dynamic(() => import("./GridGlobe"), {
+  ssr: false,
+});
 
 export const BentoGrid = ({
   className,
@@ -45,17 +50,18 @@ export const BentoGridItem = ({
   titleClassName?: string;
   spareImg?: string;
 }) => {
-  // Combine all tech stacks into one array for the scrolling effect
   const allStacks = [
-    "ReactJS",
-    "Express",
-    "Typescript",
-    "Chakra UI ",
-    "Node.js",
-    "jQuery",
-    "TailwindCSS",
+    "React Native",
+    "React.js",
     "Next.js",
+    "TypeScript",
+    "JavaScript",
+    "Redux",
+    "Node.js",
+    "Express",
     "MongoDB",
+    "Git",
+    "GitHub",
   ];
 
   const [copied, setCopied] = useState(false);
@@ -69,10 +75,15 @@ export const BentoGridItem = ({
     },
   };
 
-  const handleCopy = () => {
-    const text = "emmanard9@gmail.com";
-    document.execCommand("copy");
-    setCopied(true);
+  const handleCopy = async () => {
+    const text = "chimavalentine11@gmail.com";
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy email:", err);
+    }
   };
 
   return (
@@ -122,11 +133,11 @@ export const BentoGridItem = ({
             "group-hover/bento:translate-x-2 transition duration-200 relative md:h-full min-h-40 flex flex-col px-5 p-5 lg:p-10"
           )}
         >
-          <div className="font-sans font-extralight md:max-w-32 md:text-xs lg:text-base text-sm text-[#C1C2D3] z-10">
+          <div className="font-sans font-light md:max-w-32 md:text-xs lg:text-base text-sm text-[#C1C2D3] z-10 leading-relaxed opacity-90">
             {description}
           </div>
           <div
-            className={`font-sans text-lg lg:text-3xl max-w-96 font-bold z-10`}
+            className={`font-sans text-lg lg:text-3xl max-w-96 font-bold z-10 text-white tracking-tight leading-tight`}
           >
             {title}
           </div>
@@ -141,7 +152,7 @@ export const BentoGridItem = ({
                 {[...allStacks, ...allStacks].map((item, i) => (
                   <span
                     key={i}
-                    className="flex-shrink-0 text-white text-bold font-sans font-bold text-lg opacity-100 lg:opacity-100  transition"
+                    className="flex-shrink-0 text-white font-sans font-semibold text-base lg:text-lg opacity-90 lg:opacity-100 transition tracking-wide"
                   >
                     {item}
                   </span>

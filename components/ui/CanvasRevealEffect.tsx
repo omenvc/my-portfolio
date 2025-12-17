@@ -289,13 +289,103 @@ const ShaderMaterial = ({
   );
 };
 
+// Check WebGL availability synchronously with thorough checks
+const isWebGLAvailable = (): boolean => {
+  if (typeof window === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || 
+               canvas.getContext("experimental-webgl") || 
+               canvas.getContext("webgl2");
+    if (!gl) return false;
+    // Test if we can actually use WebGL by creating a test shader
+    const testShader = gl.createShader(gl.VERTEX_SHADER);
+    if (testShader) {
+      gl.deleteShader(testShader);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 const Shader: React.FC<ShaderProps> = ({ source, uniforms, maxFps = 60 }) => {
+  const [webGLAvailable, setWebGLAvailable] = React.useState<boolean | null>(null);
+  const [hasError, setHasError] = React.useState(false);
+
+  React.useEffect(() => {
+    // Check WebGL on mount
+    const available = isWebGLAvailable();
+    setWebGLAvailable(available);
+    
+    // Set up global error handler for WebGL errors
+    const handleWebGLError = (event: ErrorEvent) => {
+      if (event.message?.includes("WebGL") || event.message?.includes("webgl")) {
+        setHasError(true);
+        event.preventDefault();
+      }
+    };
+    
+    window.addEventListener("error", handleWebGLError);
+    return () => window.removeEventListener("error", handleWebGLError);
+  }, []);
+
+  // Show fallback while checking or if unavailable/error
+  if (webGLAvailable === false || hasError) {
+    return (
+      <div className="absolute inset-0 h-full w-full bg-gradient-to-br from-gray-900 to-gray-800 opacity-50" />
+    );
+  }
+
+  // Don't render Canvas until we've confirmed WebGL is available
+  if (webGLAvailable === null) {
+    return (
+      <div className="absolute inset-0 h-full w-full bg-gradient-to-br from-gray-900 to-gray-800 opacity-50" />
+    );
+  }
+
   return (
-    <Canvas className="absolute inset-0  h-full w-full">
-      <ShaderMaterial source={source} uniforms={uniforms} maxFps={maxFps} />
-    </Canvas>
+    <ErrorBoundary 
+      fallback={
+        <div className="absolute inset-0 h-full w-full bg-gradient-to-br from-gray-900 to-gray-800 opacity-50" />
+      }
+      onError={() => setHasError(true)}
+    >
+      <Canvas className="absolute inset-0 h-full w-full">
+        <ShaderMaterial source={source} uniforms={uniforms} maxFps={maxFps} />
+      </Canvas>
+    </ErrorBoundary>
   );
 };
+
+// Error Boundary component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback: React.ReactNode; onError?: () => void },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode; fallback: React.ReactNode; onError?: () => void }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Canvas error:", error, errorInfo);
+    if (this.props.onError) {
+      this.props.onError();
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
 interface ShaderProps {
   source: string;
   uniforms: {

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Color, Scene, Fog, PerspectiveCamera, Vector3 } from "three";
 import ThreeGlobe from "three-globe";
 import { useThree, Object3DNode, Canvas, extend } from "@react-three/fiber";
@@ -242,39 +242,96 @@ export function WebGLRendererConfig() {
   return null;
 }
 
+// Check WebGL availability synchronously
+const isWebGLAvailable = (): boolean => {
+  if (typeof window === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    return !!gl;
+  } catch (e) {
+    return false;
+  }
+};
+
+// Error Boundary for Globe
+class GlobeErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Globe Canvas error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
 export function World(props: WorldProps) {
   const { globeConfig } = props;
+  
+  // Check WebGL synchronously during render
+  const webGLAvailable = React.useMemo(() => isWebGLAvailable(), []);
+
+  if (!webGLAvailable) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-black-100 rounded-lg">
+        <div className="text-white-200 text-sm">3D Globe unavailable</div>
+      </div>
+    );
+  }
+
   const scene = new Scene();
   scene.fog = new Fog(0xffffff, 400, 2000);
+  
   return (
-    <Canvas scene={scene} camera={new PerspectiveCamera(50, aspect, 180, 1800)}>
-      <WebGLRendererConfig />
-      <ambientLight color={globeConfig.ambientLight} intensity={0.6} />
-      <directionalLight
-        color={globeConfig.directionalLeftLight}
-        position={new Vector3(-400, 100, 400)}
-      />
-      <directionalLight
-        color={globeConfig.directionalTopLight}
-        position={new Vector3(-200, 500, 200)}
-      />
-      <pointLight
-        color={globeConfig.pointLight}
-        position={new Vector3(-200, 500, 200)}
-        intensity={0.8}
-      />
-      <Globe {...props} />
-      <OrbitControls
-        enablePan={false}
-        enableZoom={false}
-        minDistance={cameraZ}
-        maxDistance={cameraZ}
-        autoRotateSpeed={1}
-        autoRotate={true}
-        minPolarAngle={Math.PI / 3.5}
-        maxPolarAngle={Math.PI - Math.PI / 3}
-      />
-    </Canvas>
+    <GlobeErrorBoundary fallback={
+      <div className="w-full h-full flex items-center justify-center bg-black-100 rounded-lg">
+        <div className="text-white-200 text-sm">3D Globe unavailable</div>
+      </div>
+    }>
+      <Canvas scene={scene} camera={new PerspectiveCamera(50, aspect, 180, 1800)}>
+        <WebGLRendererConfig />
+        <ambientLight color={globeConfig.ambientLight} intensity={0.6} />
+        <directionalLight
+          color={globeConfig.directionalLeftLight}
+          position={new Vector3(-400, 100, 400)}
+        />
+        <directionalLight
+          color={globeConfig.directionalTopLight}
+          position={new Vector3(-200, 500, 200)}
+        />
+        <pointLight
+          color={globeConfig.pointLight}
+          position={new Vector3(-200, 500, 200)}
+          intensity={0.8}
+        />
+        <Globe {...props} />
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          minDistance={cameraZ}
+          maxDistance={cameraZ}
+          autoRotateSpeed={1}
+          autoRotate={true}
+          minPolarAngle={Math.PI / 3.5}
+          maxPolarAngle={Math.PI - Math.PI / 3}
+        />
+      </Canvas>
+    </GlobeErrorBoundary>
   );
 }
 

@@ -1,7 +1,14 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 
-import { CanvasRevealEffect } from "./ui/CanvasRevealEffect";
+const CanvasRevealEffect = dynamic(
+  () => import("./ui/CanvasRevealEffect").then((mod) => mod.CanvasRevealEffect),
+  {
+    ssr: false,
+  }
+);
 
 const Approach = () => {
   return (
@@ -123,8 +130,8 @@ const Card = ({
         </div>
         <h2
           // change text-3xl, add text-center
-          className="dark:text-white text-center text-3xl opacity-0 group-hover/canvas-card:opacity-100
-         relative z-10 text-black mt-4  font-bold group-hover/canvas-card:text-white 
+          className="dark:text-white text-center text-2xl opacity-0 group-hover/canvas-card:opacity-100
+         relative z-10 text-black mt-4 font-bold tracking-tight group-hover/canvas-card:text-white 
          group-hover/canvas-card:-translate-y-2 transition duration-200"
         >
           {title}
@@ -132,7 +139,7 @@ const Card = ({
         {/* add this one for the description */}
         <p
           className="text-sm opacity-0 group-hover/canvas-card:opacity-100
-         relative z-10 mt-4 group-hover/canvas-card:text-white text-center
+         relative z-10 mt-4 group-hover/canvas-card:text-white text-center leading-relaxed
          group-hover/canvas-card:-translate-y-2 transition duration-200"
           style={{ color: "#E4ECFF" }}
         >
@@ -158,7 +165,7 @@ const AceternityIcon = ({ order }: { order: string }) => {
     // Plain button for Safari
     return (
       <div>
-        <button className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-purple-600 hover:bg-purple-700 transition-colors px-5 py-2 text-white backdrop-blur-3xl font-bold text-2xl">
+        <button className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-purple-600 hover:bg-purple-700 transition-colors px-5 py-2 text-white backdrop-blur-3xl font-bold text-xl">
           {order}
         </button>
       </div>
@@ -179,7 +186,7 @@ const AceternityIcon = ({ order }: { order: string }) => {
         />
         <span
           className="inline-flex h-full w-full cursor-pointer items-center 
-        justify-center rounded-full bg-slate-950 px-5 py-2 text-purple backdrop-blur-3xl font-bold text-2xl"
+        justify-center rounded-full bg-slate-950 px-5 py-2 text-purple backdrop-blur-3xl font-bold text-xl"
         >
           {order}
         </span>

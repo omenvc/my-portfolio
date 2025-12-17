@@ -7,9 +7,9 @@ import { ThemeProvider } from "./provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Emmanuel Omunizua Portfolio",
+  title: "Chima Valentine - Software Engineer Portfolio",
   description:
-    "Full Stack and Mobile App Developer specializing in modern web and mobile applications",
+    "Software Engineer specializing in React Native, Next.js, and modern web applications. Building fintech, mobility, and government tech platforms.",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/omini-logo.jpg" sizes="any" />
+        <link rel="icon" href="/profile.svg" sizes="any" />
       </head>
       <body className={inter.className}>
         <ThemeProvider

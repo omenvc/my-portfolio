@@ -22,16 +22,31 @@ const Footer = () => {
           Ready to take <span className="text-purple">your</span> digital
           presence to the next level?
         </h1>
-        <p className="text-white-200 md:mt-10 my-5 text-center">
+        <p className="text-white-200 md:mt-10 my-5 text-center text-sm md:text-base leading-relaxed max-w-2xl opacity-90">
           Reach out to me today and let&apos;s discuss how I can help you
           achieve your goals.
         </p>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mt-4">
+          <a
+            href="mailto:chimavalentine11@gmail.com"
+            className="text-blue-100 hover:text-purple transition-all duration-200 font-medium hover:scale-105"
+          >
+            📧 chimavalentine11@gmail.com
+          </a>
+          <span className="hidden md:inline text-white-200 opacity-50">•</span>
+          <a
+            href="tel:+2348078953288"
+            className="text-blue-100 hover:text-purple transition-all duration-200 font-medium hover:scale-105"
+          >
+            📱 +234 080 789 532 88
+          </a>
+        </div>
         <div
           onClick={() => {
             // Create a temporary link and click it
             const link = document.createElement("a");
             link.href =
-              "mailto:emmmanard9@gmail.com?subject=Let's discuss your project&body=Hi Emmanuel,%0D%0A%0D%0AI'm interested in discussing a project with you.%0D%0A%0D%0ABest regards,";
+              "mailto:chimavalentine11@gmail.com?subject=Let's discuss your project&body=Hi Chima,%0D%0A%0D%0AI'm interested in discussing a project with you.%0D%0A%0D%0ABest regards,";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -40,21 +55,21 @@ const Footer = () => {
             setTimeout(() => {
               const userChoice = confirm(
                 "If your email app didn't open automatically, you can:\n\n" +
-                  "✉️ Copy my email address: emmmanard9@gmail.com\n" +
+                  "✉️ Copy my email address: chimavalentine11@gmail.com\n" +
                   "📧 Or email me manually\n\n" +
                   "Click OK to copy my email address to clipboard"
               );
 
               if (userChoice) {
                 navigator.clipboard
-                  .writeText("emmmanard9@gmail.com")
+                  .writeText("chimavalentine11@gmail.com")
                   .then(() => {
                     alert(
-                      "📋 Email address copied to clipboard!\n\nemmmanard9@gmail.com"
+                      "📋 Email address copied to clipboard!\n\nchimavalentine11@gmail.com"
                     );
                   })
                   .catch(() => {
-                    alert("📧 Please email me at:\nemmmanard9@gmail.com");
+                    alert("📧 Please email me at:\nchimavalentine11@gmail.com");
                   });
               }
             }, 2000);
@@ -70,7 +85,7 @@ const Footer = () => {
       </div>
       <div className="flex mt-16 md:flex-row flex-col justify-between items-center mb-0 pb-0">
         <p className="md:text-base text-sm md:font-normal font-light">
-          Copyright © 2025 Emmanuel Omunizua. All rights reserved.
+          Copyright © 2025 Chima Valentine. All rights reserved.
         </p>
 
         <div className="flex items-center md:gap-3 gap-6">
@@ -83,12 +98,11 @@ const Footer = () => {
 
                 // Map icons to your social media URLs
                 if (info.img.includes("git")) {
-                  url = "https://github.com/Emmanard"; // Replace with your GitHub username
+                  url = "https://github.com/omenvc";
                 } else if (info.img.includes("twit")) {
-                  url = "https://x.com/emmanard9?s=21"; // Replace with your Twitter username
+                  url = "https://x.com/omenvc";
                 } else if (info.img.includes("link")) {
-                  url =
-                    "https://www.linkedin.com/in/emmanuel-omunizua-80b380301"; // Replace with your LinkedIn username
+                  url = "https://linkedin.com/in/chimavalentine";
                 }
 
                 if (url) {

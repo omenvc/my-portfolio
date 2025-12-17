@@ -298,10 +298,12 @@ const isWebGLAvailable = (): boolean => {
                canvas.getContext("experimental-webgl") || 
                canvas.getContext("webgl2");
     if (!gl) return false;
+    // Type guard to ensure it's a WebGL context
+    const webglContext = gl as WebGLRenderingContext | WebGL2RenderingContext;
     // Test if we can actually use WebGL by creating a test shader
-    const testShader = gl.createShader(gl.VERTEX_SHADER);
+    const testShader = webglContext.createShader(webglContext.VERTEX_SHADER);
     if (testShader) {
-      gl.deleteShader(testShader);
+      webglContext.deleteShader(testShader);
     }
     return true;
   } catch (e) {
